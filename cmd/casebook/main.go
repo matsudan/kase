@@ -11,9 +11,9 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"casebook/evalcase"
-	"casebook/importer"
-	"casebook/trace"
+	"github.com/matsudan/casebook/evalcase"
+	"github.com/matsudan/casebook/importer"
+	"github.com/matsudan/casebook/trace"
 )
 
 // Exit codes.

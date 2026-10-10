@@ -1,4 +1,4 @@
-module casebook
+module github.com/matsudan/casebook
 
 go 1.27
 
