@@ -1,0 +1,19 @@
+version: "2"
+
+linters:
+  # errcheck, govet, ineffassign, staticcheck, unused
+  default: standard
+  exclusions:
+    presets:
+      # Unchecked errors from fmt.Fprint* to stderr and from Close on
+      # read-only files are intentional.
+      - std-error-handling
+    rules:
+      # Keep explicit selectors on embedded fields where they show which part
+      # of a struct is used (e.g. trace.wireLine embedding wireSpan).
+      - linters: [staticcheck]
+        text: "QF1008:"
+
+formatters:
+  enable:
+    - gofmt
