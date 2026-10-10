@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"casebook/evalcase"
-	"casebook/trace"
+	"github.com/matsudan/casebook/evalcase"
+	"github.com/matsudan/casebook/trace"
 )
 
 func TestFromSpans(t *testing.T) {
