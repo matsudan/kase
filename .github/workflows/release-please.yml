@@ -1,0 +1,24 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create release commits, tags and GitHub Releases
+      issues: write # manage labels on release PRs
+      pull-requests: write # open and update release PRs
+    steps:
+      # Uses the default GITHUB_TOKEN, so release PRs and tags do not trigger
+      # other workflows.
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
