@@ -15,14 +15,27 @@ concurrency:
 
 jobs:
   test:
+    name: test (${{ matrix.name }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The minimum version declared by the go directive in go.mod.
+          - name: minimum
+            go-version-file: go.mod
+          # The latest stable release, so new Go versions are tested as soon
+          # as they are out.
+          - name: latest
+            go-version: stable
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ matrix.go-version-file }}
+          go-version: ${{ matrix.go-version }}
       - name: Check go.mod and go.sum are tidy
         run: go mod tidy -diff
       - name: Test
