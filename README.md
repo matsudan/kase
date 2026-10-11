@@ -5,14 +5,6 @@ English | [日本語](README.ja.md)
 A CLI that converts OpenTelemetry traces of AI agents (JSONL) into evaluation cases (JSONL).
 It supports spans that follow the GenAI semantic conventions, as emitted by Strands Agents.
 
-## Installation
-
-Requires Go 1.27 or later. From the repository root:
-
-```sh
-go install ./cmd/casebook
-```
-
 ## Usage
 
 ```sh
@@ -34,6 +26,14 @@ Cases are written to the output; a summary and the reasons for any skips are wri
 skipped trace 4bf9... span 00f0...: no input messages found on the invoke_agent span (...)
 120 spans -> 8 cases (1 skipped)
 ```
+
+## Installation
+
+```sh
+go install github.com/matsudan/casebook/cmd/casebook@latest
+```
+
+See the `go` line in [`go.mod`](go.mod) for the minimum supported Go version.
 
 ## Input
 

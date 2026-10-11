@@ -5,14 +5,6 @@
 AI エージェントの OpenTelemetry トレース（JSONL）を、評価用ケース（JSONL）に変換する CLI です。
 Strands Agents が出力する GenAI セマンティック規約のスパンに対応しています。
 
-## インストール
-
-Go 1.27 以降が必要です。リポジトリのルートで:
-
-```sh
-go install ./cmd/casebook
-```
-
 ## 使い方
 
 ```sh
@@ -34,6 +26,14 @@ cat traces.jsonl | casebook import > cases.jsonl
 skipped trace 4bf9... span 00f0...: no input messages found on the invoke_agent span (...)
 120 spans -> 8 cases (1 skipped)
 ```
+
+## インストール
+
+```sh
+go install github.com/matsudan/casebook/cmd/casebook@latest
+```
+
+対応下限バージョンは [`go.mod`](go.mod) の `go` 行を参照してください。
 
 ## 入力
 
