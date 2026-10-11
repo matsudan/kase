@@ -1,4 +1,4 @@
-module github.com/matsudan/casebook
+module github.com/matsudan/kase
 
 go 1.26
 

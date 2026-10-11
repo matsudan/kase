@@ -13,8 +13,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/matsudan/casebook/evalcase"
-	"github.com/matsudan/casebook/trace"
+	"github.com/matsudan/kase/evalcase"
+	"github.com/matsudan/kase/trace"
 )
 
 // SourceFormat is recorded in Meta.Source.Format.

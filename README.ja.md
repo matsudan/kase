@@ -1,4 +1,4 @@
-# casebook
+# kase
 
 [English](README.md) | 日本語
 
@@ -9,10 +9,10 @@ Strands Agents が出力する GenAI セマンティック規約のスパンに�
 
 ```sh
 # ファイルからファイルへ
-casebook import -i traces.jsonl -o cases.jsonl
+kase import -i traces.jsonl -o cases.jsonl
 
 # 標準入力から標準出力へ
-cat traces.jsonl | casebook import > cases.jsonl
+cat traces.jsonl | kase import > cases.jsonl
 ```
 
 | オプション | 説明 | 既定値 |
@@ -30,7 +30,7 @@ skipped trace 4bf9... span 00f0...: no input messages found on the invoke_agent 
 ## インストール
 
 ```sh
-go install github.com/matsudan/casebook/cmd/casebook@latest
+go install github.com/matsudan/kase/cmd/kase@latest
 ```
 
 対応下限バージョンは [`go.mod`](go.mod) の `go` 行を参照してください。
