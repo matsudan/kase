@@ -1,5 +1,7 @@
 # kase
 
+[![ci](https://github.com/matsudan/kase/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/matsudan/kase/actions/workflows/ci.yml)
+
 [English](README.md) | 日本語
 
 AI エージェントの OpenTelemetry トレース（JSONL）を、評価用ケース（JSONL）に変換する CLI です。

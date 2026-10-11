@@ -1,5 +1,7 @@
 # kase
 
+[![ci](https://github.com/matsudan/kase/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/matsudan/kase/actions/workflows/ci.yml)
+
 English | [日本語](README.ja.md)
 
 A CLI that converts OpenTelemetry traces of AI agents (JSONL) into evaluation cases (JSONL).
