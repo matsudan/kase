@@ -53,7 +53,7 @@ func TestRun(t *testing.T) {
 		{
 			name:       "no args prints help",
 			args:       nil,
-			wantStdout: "COMMANDS",
+			wantStdout: "kase - Turn agent traces into evaluation cases",
 		},
 		{
 			name:       "import help",
@@ -64,7 +64,7 @@ func TestRun(t *testing.T) {
 			name:       "unknown command",
 			args:       []string{"nope"},
 			wantCode:   exitUsage,
-			wantStderr: `unknown command "nope"`,
+			wantStderr: `kase: unknown command "nope" (see "kase help")`,
 		},
 		{
 			name:     "undefined flag",
@@ -72,13 +72,13 @@ func TestRun(t *testing.T) {
 			wantCode: exitUsage,
 			// urfave/cli prints the subcommand usage to stdout on flag errors.
 			wantStdout: "USAGE:",
-			wantStderr: "flag provided but not defined: -bogus",
+			wantStderr: "kase: flag provided but not defined: -bogus",
 		},
 		{
 			name:       "stray positional argument",
 			args:       []string{"import", "stray.jsonl"},
 			wantCode:   exitUsage,
-			wantStderr: "unexpected arguments: [stray.jsonl]",
+			wantStderr: "kase: unexpected arguments: [stray.jsonl]",
 		},
 		{
 			name:       "missing input file",
@@ -97,14 +97,14 @@ func TestRun(t *testing.T) {
 			args:       []string{"import"},
 			stdin:      "{bad",
 			wantCode:   exitFailure,
-			wantStderr: "read -: line 1:",
+			wantStderr: "kase: read -: line 1:",
 		},
 		{
 			name:       "valid spans but nothing convertible",
 			args:       []string{"import"},
 			stdin:      `{"traceId":"t","spanId":"s","name":"chat"}`,
 			wantCode:   exitFailure,
-			wantStderr: "no cases produced",
+			wantStderr: "kase: no cases produced",
 		},
 	}
 	for _, tt := range tests {

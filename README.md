@@ -1,4 +1,4 @@
-# casebook
+# kase
 
 English | [日本語](README.ja.md)
 
@@ -9,10 +9,10 @@ It supports spans that follow the GenAI semantic conventions, as emitted by Stra
 
 ```sh
 # File to file
-casebook import -i traces.jsonl -o cases.jsonl
+kase import -i traces.jsonl -o cases.jsonl
 
 # Stdin to stdout
-cat traces.jsonl | casebook import > cases.jsonl
+cat traces.jsonl | kase import > cases.jsonl
 ```
 
 | Option | Description | Default |
@@ -30,7 +30,7 @@ skipped trace 4bf9... span 00f0...: no input messages found on the invoke_agent 
 ## Installation
 
 ```sh
-go install github.com/matsudan/casebook/cmd/casebook@latest
+go install github.com/matsudan/kase/cmd/kase@latest
 ```
 
 See the `go` line in [`go.mod`](go.mod) for the minimum supported Go version.
@@ -72,4 +72,4 @@ One case per outermost agent invocation (`invoke_agent`, `invoke_swarm`, `invoke
 | `1` | Runtime error (a file cannot be opened, an input line is invalid, or no cases were produced) |
 | `2` | Usage error (unknown command, invalid flag, or unexpected argument) |
 
-If any input line is invalid, casebook reports its line number and exits without writing any cases.
+If any input line is invalid, kase reports its line number and exits without writing any cases.

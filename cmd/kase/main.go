@@ -1,4 +1,4 @@
-// Command casebook turns agent traces into evaluation cases.
+// Command kase turns agent traces into evaluation cases.
 package main
 
 import (
@@ -11,9 +11,9 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/matsudan/casebook/evalcase"
-	"github.com/matsudan/casebook/importer"
-	"github.com/matsudan/casebook/trace"
+	"github.com/matsudan/kase/evalcase"
+	"github.com/matsudan/kase/importer"
+	"github.com/matsudan/kase/trace"
 )
 
 // Exit codes.
@@ -28,7 +28,7 @@ func main() {
 
 func newApp(stdin io.Reader, stdout, stderr io.Writer) *cli.Command {
 	return &cli.Command{
-		Name:      "casebook",
+		Name:      "kase",
 		Usage:     "Turn agent traces into evaluation cases",
 		Reader:    stdin,
 		Writer:    stdout,
@@ -70,7 +70,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 
 	err := app.Run(context.Background(), append([]string{app.Name}, args...))
 	if unknown != "" {
-		fmt.Fprintf(stderr, "casebook: unknown command %q (see \"casebook help\")\n", unknown)
+		fmt.Fprintf(stderr, "%s: unknown command %q (see \"%[1]s help\")\n", app.Name, unknown)
 		return exitUsage
 	}
 	if err == nil {
@@ -78,10 +78,10 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	}
 	var ec cli.ExitCoder
 	if errors.As(err, &ec) {
-		fmt.Fprintf(stderr, "casebook: %v\n", ec)
+		fmt.Fprintf(stderr, "%s: %v\n", app.Name, ec)
 		return ec.ExitCode()
 	}
-	fmt.Fprintf(stderr, "casebook: %v\n", err)
+	fmt.Fprintf(stderr, "%s: %v\n", app.Name, err)
 	return exitUsage
 }
 

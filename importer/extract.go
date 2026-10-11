@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/matsudan/casebook/evalcase"
-	"github.com/matsudan/casebook/trace"
+	"github.com/matsudan/kase/evalcase"
+	"github.com/matsudan/kase/trace"
 )
 
 // Attribute and event names used by Strands and the OpenTelemetry GenAI
