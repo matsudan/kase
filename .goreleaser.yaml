@@ -1,0 +1,36 @@
+# Uploads binaries to the GitHub Release created by release-please.
+version: 2
+
+builds:
+  - main: ./cmd/kase
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      - README.ja.md
+
+checksum:
+  name_template: checksums.txt
+
+# Release notes are written by release-please.
+changelog:
+  disable: true

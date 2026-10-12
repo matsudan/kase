@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strings"
 	"testing"
 )
@@ -59,6 +60,11 @@ func TestRun(t *testing.T) {
 			name:       "import help",
 			args:       []string{"import", "--help"},
 			wantStdout: "--input",
+		},
+		{
+			name:       "version",
+			args:       []string{"--version"},
+			wantStdout: "kase version ",
 		},
 		{
 			name:       "unknown command",
@@ -175,4 +181,30 @@ func countCases(t *testing.T, out []byte) int {
 		n++
 	}
 	return n
+}
+
+func TestModuleVersion(t *testing.T) {
+	tests := []struct {
+		name    string
+		version string
+		ok      bool
+		want    string
+	}{
+		{name: "tagged", version: "v0.2.0", ok: true, want: "0.2.0"},
+		{name: "pseudo-version", version: "v0.0.0-20261011060911-bf08096da311", ok: true, want: "0.0.0-20261011060911-bf08096da311"},
+		{name: "devel", version: "(devel)", ok: true, want: "dev"},
+		{name: "empty", version: "", ok: true, want: "dev"},
+		{name: "no build info", ok: false, want: "dev"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bi := &debug.BuildInfo{Main: debug.Module{Version: tt.version}}
+			if !tt.ok {
+				bi = nil
+			}
+			if got := moduleVersion(bi, tt.ok); got != tt.want {
+				t.Errorf("moduleVersion(%q) = %q, want %q", tt.version, got, tt.want)
+			}
+		})
+	}
 }
