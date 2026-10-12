@@ -25,7 +25,6 @@ type Span struct {
 	SpanID       string
 	ParentSpanID string
 	Name         string
-	Scope        string
 	Start        int64 // unix nanoseconds; 0 if unknown
 	End          int64 // unix nanoseconds; 0 if unknown
 	Status       string
@@ -45,8 +44,8 @@ type Event struct {
 	Attributes Attrs
 }
 
-// Attrs holds span or event attributes. Numbers are json.Number (or int64/float64
-// when they come from OTLP typed values) so that large integers keep precision.
+// Attrs holds span or event attributes. Numbers are json.Number, so that large
+// integers keep precision, except OTLP doubleValue, which is float64.
 type Attrs map[string]any
 
 // String returns the attribute as a string, or "" if absent or not a string.

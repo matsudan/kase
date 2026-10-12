@@ -179,15 +179,13 @@ func draftExpected(calls []evalcase.ToolCall) evalcase.Expected {
 
 func buildMeta(traceID string, root trace.Span) evalcase.Meta {
 	m := evalcase.Meta{
-		Source: evalcase.Source{Format: SourceFormat, TraceID: traceID, SpanID: root.SpanID},
-		Agent:  root.Attributes.String(attrAgentName),
-		Model:  root.Attributes.String(attrModel),
+		Source:     evalcase.Source{Format: SourceFormat, TraceID: traceID, SpanID: root.SpanID},
+		Agent:      root.Attributes.String(attrAgentName),
+		Model:      root.Attributes.String(attrModel),
+		DurationMs: durationMs(root),
 	}
 	if root.Start > 0 {
 		m.StartedAt = time.Unix(0, root.Start).UTC().Format(time.RFC3339Nano)
-		if root.End >= root.Start {
-			m.DurationMs = (root.End - root.Start) / 1_000_000
-		}
 	}
 	if root.Status == trace.StatusError {
 		m.Outcome = "error"
@@ -203,6 +201,16 @@ func buildMeta(traceID string, root trace.Span) evalcase.Meta {
 	}
 	return m
 }
+
+func durationMs(s trace.Span) int64 {
+	if s.Start > 0 && s.End >= s.Start {
+		return (s.End - s.Start) / 1_000_000
+	}
+	return 0
+}
+
+// maxAncestorWalk stops the walk on parent cycles in malformed input.
+const maxAncestorWalk = 1024
 
 // invocationAncestors returns the invocation spans enclosing s (excluding s
 // itself), nearest first. The last element is the outermost invocation.
