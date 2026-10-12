@@ -1,4 +1,4 @@
-# Uploads binaries to the GitHub Release created by release-please.
+# Uploads binaries to the draft GitHub Release created by release-please.
 version: 2
 
 builds:
@@ -34,3 +34,10 @@ checksum:
 # Release notes are written by release-please.
 changelog:
   disable: true
+
+# release-please creates the release as a draft, since immutable releases do
+# not accept assets once published. GoReleaser uploads to it and publishes it.
+release:
+  use_existing_draft: true
+  # Must match the release name set by release-please.
+  name_template: "{{ .Tag }}"
