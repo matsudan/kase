@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime/debug"
+	"strings"
 
 	"github.com/urfave/cli/v3"
 
@@ -22,14 +24,35 @@ const (
 	exitUsage   = 2 // bad flags or arguments
 )
 
+// Set by GoReleaser via -ldflags.
+var version string
+
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+}
+
+// buildVersion falls back to the version recorded by "go install ...@vX.Y.Z".
+func buildVersion() string {
+	if version != "" {
+		return version
+	}
+	return moduleVersion(debug.ReadBuildInfo())
+}
+
+// "(devel)" means no VCS info was available at build time. The "v" prefix is
+// dropped to match the versions GoReleaser sets.
+func moduleVersion(bi *debug.BuildInfo, ok bool) string {
+	if !ok || bi.Main.Version == "" || bi.Main.Version == "(devel)" {
+		return "dev"
+	}
+	return strings.TrimPrefix(bi.Main.Version, "v")
 }
 
 func newApp(stdin io.Reader, stdout, stderr io.Writer) *cli.Command {
 	return &cli.Command{
 		Name:      "kase",
 		Usage:     "Turn agent traces into evaluation cases",
+		Version:   buildVersion(),
 		Reader:    stdin,
 		Writer:    stdout,
 		ErrWriter: stderr,
