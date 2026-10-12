@@ -3,6 +3,7 @@ package trace
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -16,9 +17,6 @@ type wireLine struct {
 
 type wireResourceSpans struct {
 	ScopeSpans []struct {
-		Scope struct {
-			Name string `json:"name"`
-		} `json:"scope"`
 		Spans []wireSpan `json:"spans"`
 	} `json:"scopeSpans"`
 }
@@ -37,21 +35,14 @@ type wireSpan struct {
 		TimeUnixNano nanoTime `json:"timeUnixNano"`
 		Attributes   Attrs    `json:"attributes"`
 	} `json:"events"`
-	Scope struct {
-		Name string `json:"name"`
-	} `json:"scope"`
 }
 
-func (w wireSpan) toSpan(scope string) Span {
-	if scope == "" {
-		scope = w.Scope.Name
-	}
+func (w wireSpan) toSpan() Span {
 	s := Span{
 		TraceID:      w.TraceID,
 		SpanID:       w.SpanID,
 		ParentSpanID: w.ParentSpanID,
 		Name:         w.Name,
-		Scope:        scope,
 		Start:        int64(w.StartTimeUnixNano),
 		End:          int64(w.EndTimeUnixNano),
 		Status:       w.Status.Code,
@@ -158,7 +149,7 @@ func (a *Attrs) UnmarshalJSON(b []byte) error {
 		}
 		*a = m
 	default:
-		return fmt.Errorf("attributes must be an object or a key-value list")
+		return errors.New("attributes must be an object or a key-value list")
 	}
 	return nil
 }

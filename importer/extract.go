@@ -9,7 +9,8 @@ import (
 )
 
 // Attribute and event names used by Strands and the OpenTelemetry GenAI
-// semantic conventions. Strands emits two generations of conventions:
+// semantic conventions. Strands emits two generations of conventions, and the
+// latest wins when both are present:
 //
 //   - legacy: span events gen_ai.user.message / gen_ai.choice / gen_ai.tool.message
 //   - latest: attributes gen_ai.input.messages / gen_ai.output.messages and
@@ -18,24 +19,21 @@ import (
 // In the latest convention the message attributes are, by default, attributes
 // of a gen_ai.client.inference.operation.details event; with the
 // gen_ai_span_attributes_only opt-in they are span attributes. Both are read.
-//
-// Both conventions are supported; the latest wins when both are present.
 const (
-	attrOperation   = "gen_ai.operation.name"
-	attrAgentName   = "gen_ai.agent.name"
-	attrModel       = "gen_ai.request.model"
-	attrToolName    = "gen_ai.tool.name"
-	attrToolCallID  = "gen_ai.tool.call.id"
-	attrToolArgs    = "gen_ai.tool.call.arguments"
-	attrToolResult  = "gen_ai.tool.call.result"
-	attrInputMsgs   = "gen_ai.input.messages"
-	attrOutputMsgs  = "gen_ai.output.messages"
-	attrErrorType   = "error.type"
-	eventToolMsg    = "gen_ai.tool.message"
-	eventChoice     = "gen_ai.choice"
-	opInvokeAgent   = "invoke_agent"
-	opExecuteTool   = "execute_tool"
-	maxAncestorWalk = 1024
+	attrOperation  = "gen_ai.operation.name"
+	attrAgentName  = "gen_ai.agent.name"
+	attrModel      = "gen_ai.request.model"
+	attrToolName   = "gen_ai.tool.name"
+	attrToolCallID = "gen_ai.tool.call.id"
+	attrToolArgs   = "gen_ai.tool.call.arguments"
+	attrToolResult = "gen_ai.tool.call.result"
+	attrInputMsgs  = "gen_ai.input.messages"
+	attrOutputMsgs = "gen_ai.output.messages"
+	attrErrorType  = "error.type"
+	eventToolMsg   = "gen_ai.tool.message"
+	eventChoice    = "gen_ai.choice"
+	opInvokeAgent  = "invoke_agent"
+	opExecuteTool  = "execute_tool"
 )
 
 func operation(s trace.Span) string { return s.Attributes.String(attrOperation) }
@@ -255,13 +253,11 @@ func extractOutput(s trace.Span) (text, finish string) {
 // extractToolCall converts an execute_tool span into a ToolCall.
 func extractToolCall(s trace.Span, agent string) evalcase.ToolCall {
 	tc := evalcase.ToolCall{
-		ID:    s.Attributes.String(attrToolCallID),
-		Name:  s.Attributes.String(attrToolName),
-		Agent: agent,
-		Error: s.Status == trace.StatusError || s.Attributes[attrErrorType] != nil,
-	}
-	if s.Start > 0 && s.End >= s.Start {
-		tc.DurationMs = (s.End - s.Start) / 1_000_000
+		ID:         s.Attributes.String(attrToolCallID),
+		Name:       s.Attributes.String(attrToolName),
+		Agent:      agent,
+		Error:      s.Status == trace.StatusError || s.Attributes[attrErrorType] != nil,
+		DurationMs: durationMs(s),
 	}
 
 	if v, ok := s.Attributes[attrToolArgs]; ok {

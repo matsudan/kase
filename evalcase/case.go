@@ -234,7 +234,7 @@ func ReadJSONL(r io.Reader) ([]Case, error) {
 // WriteJSONL writes one case per line.
 func WriteJSONL(w io.Writer, cases []Case) error {
 	enc := json.NewEncoder(w)
-	enc.SetEscapeHTML(false) // keep placeholders like <EMAIL_1> readable
+	enc.SetEscapeHTML(false) // keep <, > and & in message text readable
 	for i := range cases {
 		if err := enc.Encode(&cases[i]); err != nil {
 			return fmt.Errorf("write case %s: %w", cases[i].ID, err)

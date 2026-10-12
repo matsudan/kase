@@ -15,7 +15,6 @@ type spanSummary struct {
 	SpanID       string
 	ParentSpanID string
 	Name         string
-	Scope        string
 	Start, End   int64
 	Status       string
 	StatusMsg    string
@@ -29,7 +28,6 @@ func summarize(s Span, intKeys map[string]int64) spanSummary {
 		SpanID:       s.SpanID,
 		ParentSpanID: s.ParentSpanID,
 		Name:         s.Name,
-		Scope:        s.Scope,
 		Start:        s.Start,
 		End:          s.End,
 		Status:       s.Status,
@@ -51,7 +49,6 @@ func summarize(s Span, intKeys map[string]int64) spanSummary {
 }
 
 func TestReadFixtures(t *testing.T) {
-	const scope = "strands.telemetry.tracer"
 	tests := []struct {
 		name string
 		file string
@@ -63,20 +60,20 @@ func TestReadFixtures(t *testing.T) {
 			want: []spanSummary{
 				{
 					SpanID: "0000000000000003", ParentSpanID: "0000000000000002",
-					Name: "execute_tool get_weather", Scope: scope,
+					Name:  "execute_tool get_weather",
 					Start: 1776929865000000000, End: 1776929865400000000,
 					Status: StatusUnset, Seq: 0,
 					Events: []string{"gen_ai.tool.message", "gen_ai.choice"},
 				},
 				{
 					SpanID: "0000000000000004", ParentSpanID: "0000000000000002",
-					Name: "chat", Scope: scope,
+					Name:  "chat",
 					Start: 1776929864100000000, End: 1776929864900000000,
 					Status: StatusUnset, Seq: 1,
 				},
 				{
 					SpanID: "0000000000000002", ParentSpanID: "0000000000000001",
-					Name: "invoke_agent TravelAgent", Scope: scope,
+					Name: "invoke_agent TravelAgent",
 					// Must survive without float64 rounding.
 					Start: 1776929864011990383, End: 1776929869634304466,
 					Status: StatusUnset, Seq: 2,
@@ -91,21 +88,21 @@ func TestReadFixtures(t *testing.T) {
 			want: []spanSummary{
 				{
 					SpanID: "00000000000000a3", ParentSpanID: "00000000000000a1",
-					Name: "execute_tool refund", Scope: scope,
+					Name: "execute_tool refund",
 					// Timestamps are numeric strings in OTLP JSON.
 					Start: 1776929866000000000, End: 1776929866100000000,
 					Status: StatusError, StatusMsg: "boom", Seq: 0,
 				},
 				{
 					SpanID: "00000000000000a2", ParentSpanID: "00000000000000a1",
-					Name: "execute_tool get_order", Scope: scope,
+					Name:  "execute_tool get_order",
 					Start: 1776929865000000000, End: 1776929865200000000,
 					Status: StatusUnset, Seq: 1,
 				},
 				{
 					SpanID: "00000000000000a1",
-					Name:   "invoke_agent RefundAgent", Scope: scope,
-					Start: 1776929864000000000, End: 1776929868000000000,
+					Name:   "invoke_agent RefundAgent",
+					Start:  1776929864000000000, End: 1776929868000000000,
 					Status: StatusOK, Seq: 2,
 					IntAttrs: map[string]int64{"gen_ai.usage.input_tokens": 120},
 				},
@@ -190,9 +187,9 @@ func TestRead(t *testing.T) {
 				`{"scope":{"name":"s1"},"spans":[{"traceId":"t","spanId":"1"},{"traceId":"t","spanId":"2"}]},` +
 				`{"scope":{"name":"s2"},"spans":[{"traceId":"t","spanId":"3"}]}]}]}`,
 			want: []Span{
-				{TraceID: "t", SpanID: "1", Scope: "s1", Status: StatusUnset, Seq: 0},
-				{TraceID: "t", SpanID: "2", Scope: "s1", Status: StatusUnset, Seq: 1},
-				{TraceID: "t", SpanID: "3", Scope: "s2", Status: StatusUnset, Seq: 2},
+				{TraceID: "t", SpanID: "1", Status: StatusUnset, Seq: 0},
+				{TraceID: "t", SpanID: "2", Status: StatusUnset, Seq: 1},
+				{TraceID: "t", SpanID: "3", Status: StatusUnset, Seq: 2},
 			},
 		},
 		{

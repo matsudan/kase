@@ -14,7 +14,7 @@ import (
 func Read(r io.Reader) ([]Span, error) {
 	// ReadBytes has no line-length limit, unlike bufio.Scanner. Traces that
 	// capture prompts can easily exceed the scanner's 64KiB default.
-	br := bufio.NewReaderSize(r, 1<<20)
+	br := bufio.NewReader(r)
 
 	var spans []Span
 	for lineNo := 1; ; lineNo++ {
@@ -49,12 +49,12 @@ func parseLine(line []byte) ([]Span, error) {
 		for _, rs := range wl.ResourceSpans {
 			for _, ss := range rs.ScopeSpans {
 				for _, ws := range ss.Spans {
-					out = append(out, ws.toSpan(ss.Scope.Name))
+					out = append(out, ws.toSpan())
 				}
 			}
 		}
 	} else {
-		out = append(out, wl.wireSpan.toSpan(""))
+		out = append(out, wl.wireSpan.toSpan())
 	}
 
 	for _, s := range out {
