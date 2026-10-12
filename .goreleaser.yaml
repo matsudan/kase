@@ -39,5 +39,7 @@ changelog:
 # not accept assets once published. GoReleaser uploads to it and publishes it.
 release:
   use_existing_draft: true
+  # Lets a failed release job be re-run after a partial upload.
+  replace_existing_artifacts: true
   # Must match the release name set by release-please.
   name_template: "{{ .Tag }}"
